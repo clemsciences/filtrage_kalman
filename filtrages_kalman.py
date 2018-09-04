@@ -187,6 +187,10 @@ def get_distance(point1, point2):
     return sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
 
 
+def get_err(real, estimated):
+    return [real[i].distance(estimated[i]) for i in range(len(real))]
+
+
 def get_mer(real, estimated):
     """
     Renvoie la moyenne des distances
@@ -195,19 +199,21 @@ def get_mer(real, estimated):
     :return:
     """
     try:
-        for i in range(len(real)):
-            print("réel ", real[i], " estimé ", estimated[i])
-            print(real[i].distance(estimated[i]))
+        # for i in range(len(real)):
+            # print("réel ", real[i], " estimé ", estimated[i])
+            # print(real[i].distance(estimated[i]))
         res = [real[i].distance(estimated[i]) for i in range(len(real))]
         # print "La moyenne des distances entre les estimations et la réalité est : "
         return sum(res)/float(len(res))
     except ValueError:
+        i = 0
         print(real[i])
         print(estimated[i])
-    # except IndexError:
-    #     print(i)
-    #     print(len(real))
-    #     print(len(estimated))
+    except IndexError:
+        i = 0
+        print(i)
+        print(len(real))
+        print(len(estimated))
 
 
 def squared_error(real_values, filtered_values):
@@ -231,7 +237,7 @@ def lire_fic_opti():
     with open("mesures_simulees_10.txt", "r") as f:
         res = f.read()
     for r in res.split("\n"):
-        print(r)
+        # print(r)
         if len(r) != 0:
             ligne = r.split("\t")
             valeurs.append(ligne[0])
@@ -297,6 +303,7 @@ def script_classic_trajectory():
         real_path_point.append(pos)
 
     l_pos_filtre = [real_path_point[0]]
+    l_pos_measured = [real_path_point[0]]
     vite = get_velocity(measures_pos, dt)
     measures = np.concatenate((measures_pos, vite), axis=1)
     measures = np.asmatrix(measures)
@@ -310,7 +317,10 @@ def script_classic_trajectory():
         filtering.update(x_bruite, y_bruite)
         pos = filtering.get_current_position()
         l_pos_filtre.append(pos)
+        l_pos_measured.append(Point(x_bruite, y_bruite))
     print(get_mer(real_path_point, l_pos_filtre))
+    print(get_mer(real_path_point, l_pos_measured))
+    return real_path_point, l_pos_filtre, l_pos_measured
 
 
 if __name__ == "__main__":
