@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
 import pickle
-
-from conversion_mesure_etat import *
 from math import sqrt
 import collections
 import scipy.linalg
 from scipy.stats import norm
+
 import generateur_chemin
 from structures import Point, Velocity
+from conversion_mesure_etat import *
 
 
 ___author__ = "språkforskaren"
@@ -285,7 +283,7 @@ def script_classic_trajectory_with_real_measures():
     print(get_mer(real_path, l_pos_filtre))
 
 
-def script_classic_trajectory():
+def script_classic_trajectory(var=10):
     """
     Script utilisant le filtre de Kalman  avec des mesures simulées à partir d'une trajectoire inventée !
     :return:
@@ -308,7 +306,6 @@ def script_classic_trajectory():
     measures = np.concatenate((measures_pos, vite), axis=1)
     measures = np.asmatrix(measures)
     filtering = FiltrageKalman(measures[0, :].T, dt=dt)
-    var = 10
     for i in range(1, measures.shape[0]):
         x = measures[i, 0]
         y = measures[i, 1]
